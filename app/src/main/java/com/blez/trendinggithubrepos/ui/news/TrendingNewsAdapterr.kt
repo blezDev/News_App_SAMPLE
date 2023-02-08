@@ -31,7 +31,7 @@ class TrendingNewsAdapter @Inject constructor (val context : Context): PagingDat
     companion object{
         private val COMPARATOR = object : DiffUtil.ItemCallback<Article>(){
             override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
-                return oldItem == newItem
+                return oldItem.urlToImage == newItem.urlToImage
             }
 
             override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
@@ -43,6 +43,7 @@ class TrendingNewsAdapter @Inject constructor (val context : Context): PagingDat
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.setIsRecyclable(false)
+
         val item = getItem(position)
         item?.let {item->
             Glide.with(context).load(item.urlToImage).into(binding.newImage).onLoadFailed(AppCompatResources.getDrawable(context,R.drawable.load_error))

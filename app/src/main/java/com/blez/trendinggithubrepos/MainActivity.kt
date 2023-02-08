@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity() {
                     binding.progressBar.isVisible = false
 
                     trendingNewsAdapter.submitData(lifecycle, it)
+                    binding.recyclerView.adapter = null
                     binding.recyclerView.adapter = trendingNewsAdapter
                 }
 
