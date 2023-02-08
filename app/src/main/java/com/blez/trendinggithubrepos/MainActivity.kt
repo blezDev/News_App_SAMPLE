@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var trendingNewsAdapter: TrendingNewsAdapter
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -42,21 +44,14 @@ class MainActivity : AppCompatActivity() {
                 orientationChange()
 
             } else
+            {
                 binding.switchOrientation.text = "Vertical"
-            orientationChange()
+                orientationChange()
 
-        }
-
-
-        lifecycleScope.launch {
-            mainViewModel.list.collect {
-                binding.progressBar.isVisible = false
-
-                trendingNewsAdapter.submitData(lifecycle, it)
-                binding.recyclerView.adapter = trendingNewsAdapter
             }
 
         }
+        trendingNews()
 
 
         trendingNewsAdapter.onItemClick = {
@@ -76,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
         val searchQuery = object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                binding.progressBar.isVisible = true
                 if (query.toString() != "")
                     searchQuery(query.toString())
                 return false
@@ -91,10 +87,11 @@ class MainActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 mainViewModel.list.collect {
                     binding.progressBar.isVisible = false
-
+                    binding.recyclerView.clearOnScrollListeners()
                     trendingNewsAdapter.submitData(lifecycle, it)
                     binding.recyclerView.adapter = null
                     binding.recyclerView.adapter = trendingNewsAdapter
+
                 }
 
             }
@@ -107,12 +104,9 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             mainViewModel.listData(query).collect {
-
+                binding.progressBar.isVisible = false
                 trendingNewsAdapter.submitData(lifecycle, it)
-                trendingNewsAdapter.notifyDataSetChanged()
-
                 binding.recyclerView.adapter = trendingNewsAdapter
-
                 binding.recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
             }
         }
@@ -130,5 +124,21 @@ class MainActivity : AppCompatActivity() {
                 binding.recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
             }
         }
+    }
+
+    private fun trendingNews()
+    {
+
+        CoroutineScope(Dispatchers.Main).launch {
+            mainViewModel.list.collect {
+                binding.progressBar.isVisible = false
+
+                trendingNewsAdapter.submitData(lifecycle, it)
+                binding.recyclerView.adapter = trendingNewsAdapter
+
+            }
+
+        }
+
     }
 }

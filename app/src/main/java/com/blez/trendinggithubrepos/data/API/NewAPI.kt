@@ -9,7 +9,7 @@ interface NewAPI {
     @GET("v2/top-headlines/")
   suspend  fun tendingNews(@Query("country") country : String,@Query("apiKey") apiKey : String,@Query("page") page : Int,@Query("pageSize") pageSize : Int =20) : NewsData
     @GET("/v2/everything/")
-    suspend fun SearchNews(@Query("q") query : String,@Query("apiKey") apiKey : String,@Query("pageSize") pageSize : Int =20 ,@Query("page") page : Int) : NewsData
+    suspend fun SearchNews(@Query("q") query : String,@Query("apiKey") apiKey : String,@Query("pageSize") pageSize : Int =20 ,@Query("page") page : Int,@Query("language") language : String = "en") : NewsData
 
 
 }

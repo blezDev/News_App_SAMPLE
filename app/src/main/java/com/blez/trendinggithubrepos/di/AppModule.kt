@@ -12,6 +12,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
@@ -26,9 +27,11 @@ object AppModule {
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(1, TimeUnit.MINUTES) // write timeout
+            .readTimeout(1, TimeUnit.MINUTES) // read timeout
             .build()
     }
-
 
 
     @Singleton
@@ -37,10 +40,11 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesNewsAPI(okHttpClient: OkHttpClient) : NewAPI{
+    fun providesNewsAPI(okHttpClient: OkHttpClient): NewAPI {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
             .build()
             .create(NewAPI::class.java)
     }
